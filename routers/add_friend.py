@@ -10,6 +10,7 @@ router = APIRouter()
 user_collection = db['users']
 
 
+
 @router.post('/add/')
 async def add_friend(username, current_user: User = Depends(get_current_user)):
     add_user = await user_collection.find_one({"username":username})

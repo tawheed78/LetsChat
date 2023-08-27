@@ -37,6 +37,7 @@ class UserInDB(User):
     username: str
     email: str | None = None
     hashed_password: str | None=None
+    friends : List
 
 
 # class UserInDB(BaseModel):

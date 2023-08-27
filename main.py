@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from routers.authentication import router as authentication_router
 from routers.add_friend import router as add_friend_router
+from routers.chat_list import router as chat_list_router
 
 # client = AsyncIOMotorClient("mongodb+srv://tawheed:FJedrjvIV8dIGhKl@letschat.o7u0o5n.mongodb.net/?retryWrites=true&w=majority")
 
@@ -16,3 +17,5 @@ app = FastAPI()
 app.include_router(authentication_router)
 
 app.include_router(add_friend_router)
+
+app.include_router(chat_list_router)
