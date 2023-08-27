@@ -5,7 +5,7 @@ import os
 load_dotenv()
 
 
-client = AsyncIOMotorClient("mongodb+srv://tawheed:FJedrjvIV8dIGhKl@letschat.o7u0o5n.mongodb.net/?retryWrites=true&w=majority")
+client = AsyncIOMotorClient(os.getenv("MONGO_URI"))
 
 if client:
     print("******MongoDB connection successful.******")
