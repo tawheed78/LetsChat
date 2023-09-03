@@ -4,15 +4,20 @@ from fastapi import FastAPI, WebSocket
 from routers.authentication import router as authentication_router
 from routers.add_friend import router as add_friend_router
 from routers.chat_list import router as chat_list_router
-# from routers.websocket import router as websocket_router
+
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
 from fastapi import WebSocket, WebSocketDisconnect
+from fastapi.templating import Jinja2Templates
+from starlette.responses import HTMLResponse
 
 from config import db
 
 
 app = FastAPI()
+
+
+templates = Jinja2Templates(directory="templates")
 
 app.add_middleware(
     CORSMiddleware,
