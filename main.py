@@ -10,18 +10,30 @@ from datetime import datetime
 from fastapi import WebSocket, WebSocketDisconnect
 from fastapi.templating import Jinja2Templates
 from starlette.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from starlette.requests import Request
 
 from config import db
 
 
 app = FastAPI()
 
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="frontend")
+
+origins = [
+    "http://localhost", 
+    "http://localhost:8000",
+]
+@app.get("/", response_class=HTMLResponse)
+async def read_root(request: Request):
+    return templates.TemplateResponse("indx.html", {"request": request})
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    # allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
