@@ -1,6 +1,8 @@
 import json
+from pathlib import Path
 from typing import Dict, List, Tuple
 from fastapi import FastAPI, WebSocket
+from fastapi.responses import FileResponse
 from routers.authentication import router as authentication_router
 from routers.add_friend import router as add_friend_router
 from routers.chat_list import router as chat_list_router
@@ -29,6 +31,20 @@ origins = [
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
     return templates.TemplateResponse("indx.html", {"request": request})
+
+@app.get("/chat", response_class=HTMLResponse)
+async def chat(request: Request):
+    return templates.TemplateResponse("chat.html", {"request": request})
+
+# @app.get("/chat")
+# async def serve_chat_html():
+#     html_file_path = Path("frontend") / "chat.html"
+#     return FileResponse(html_file_path)
+
+# @app.get("/chat-list/")
+# async def get_chat_list_page():
+#     # Return the chat-list.html file as a response
+#     return FileResponse("frontend/chat.html")
 
 app.add_middleware(
     CORSMiddleware,

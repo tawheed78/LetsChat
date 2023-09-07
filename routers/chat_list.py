@@ -1,7 +1,9 @@
 
 from fastapi import APIRouter, Depends
+from fastapi.responses import JSONResponse
+
 from config import db
-from models.users import UserFriends, User
+from models.users import User
 from .authentication import get_current_user
 
 
@@ -14,6 +16,7 @@ async def chat_list(current_user:User=Depends(get_current_user)) :
     user = await user_collection.find_one({"username":current_user.username})
     if user:
         chat_list = user.get('friends', [])
-        return chat_list
-    return []
-    
+        return {
+            "chat_list":chat_list
+        }
+    return {}

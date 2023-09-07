@@ -102,7 +102,7 @@ async def register_user(user : UserCreate):
 async def login_access_token(form_data : Annotated[OAuth2PasswordRequestForm, Depends()]):
 
     username = form_data.username
-    print(username)
+    
     # password = form_data.password
     user = await user_collection.find_one({"username":username})
     # print(user)

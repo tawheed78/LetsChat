@@ -1,4 +1,57 @@
 <script>
+
+async function handleLogin(username, password) {
+    try {
+        // Make a POST request to the login endpoint
+        const response = await fetch("/token", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: `username=${username}&password=${password}&scope=&grant_type=&client_id=&client_secret=`,
+        });
+
+        const result = await response.json();
+        document.getElementById("message").textContent = `Access Token: ${result.access_token}`;
+
+        if (response.status === 200) {
+            return result.access_token; // Return the access token on successful login
+        } else {
+            console.error('Login failed. Please check your credentials.');
+            return null; // Return null on failed login
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        return null; // Return null on error
+    }
+}
+
+async function fetchChatList(token) {
+    try {
+        const chatListResponse = await fetch("/chat-list", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+		console.log(chatListResponse)
+        if (chatListResponse.status === 200) {
+            const chatListResult = await chatListResponse.json();
+            const chatList = chatListResult.chat_list;
+			console.log(chatList)
+            // Store chat list data in local storage for access in chat-list.html
+            localStorage.setItem('chatListData', JSON.stringify(chatList));
+
+            // Load the chat-list.html page
+            // window.location.href = 'chat.html';
+        } else {
+            console.error('Failed to fetch chat list data.');
+        }
+    } catch (error) {
+        console.error('Error:', error); 
+    }
+}
+
     document.addEventListener("DOMContentLoaded", () => {
 
         // Overlay functionality
@@ -50,46 +103,36 @@
             const loginUsername = document.getElementById("login-username").value;
             const loginPassword = document.getElementById("login-password").value;
 
-            // Make a POST request to the login endpoint
-            const response = await fetch("/token", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: `username=${loginUsername}&password=${loginPassword}&scope=&grant_type=&client_id=&client_secret=`,
-            });
+			const token = await handleLogin(loginUsername, loginPassword);
+			
+			if (token !== null) {
+				
+				try {
+					const chatListResponse = await fetch("/chat-list/", {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${token}`
+						}
+					});
+					console.log(chatListResponse)
+					if (chatListResponse.status === 200) {
+						const chatListResult = await chatListResponse.json();
+						const chatList = chatListResult.chat_list;
+						// console.log(chatList)
+						// Store chat list data in local storage for access in chat-list.html
+						localStorage.setItem('chatListData', JSON.stringify(chatList));
 
-            const result = await response.json();
-            document.getElementById("message").textContent = `Access Token: ${result.access_token}`;
-        });
+						// Load the chat-list.html page
+						window.location.href = '/chat';
+					} else {
+						console.error('Failed to fetch chat list data.');
+					}
+				} catch (error) {
+					console.error('Error:', error); 
+				}
+			}
+				});
 		
-        // document.getElementById("login-form").addEventListener("submit", async (e) => {
-        //     e.preventDefault();
-        //     const loginUsername = document.getElementById("username").value;
-        //     const loginPassword = document.getElementById("password").value;
-        //     // const formData = new FormData();
-		// 	const formData = new URLSearchParams();
-        //     formData.append("grant_type", "");
-        //     formData.append("username", loginUsername);
-        //     formData.append("password", loginPassword);
-        //     formData.append("scope", "");  // Add any additional fields required by your FastAPI route
-        //     formData.append("client_id", "");
-        //     formData.append("client_secret", "");
-        //     console.log(formData)
-        //     // Make a POST request to the login endpoint
-        //     const response = await fetch("/token", {
-        //         method: "POST",
-        //         headers: {
-        //             "Content-Type": "application/x-www-form-urlencoded",
-        //         },
-        //         // body: `username=${loginUsername}&password=${loginPassword}&scope=&grant_type=&client_id=&client_secret=`,
-        //         body: formData.toString(),
-        //     });
-
-        //     const result = await response.json();
-        //     document.getElementById("message").textContent = `Access Token: ${result.access_token}`;
-            
-        // });
 	})
 </script>
 
@@ -401,11 +444,4 @@ footer a {
 		</div>
 	</div>
 </div>
-<!-- <footer>
-	<p>
-		Created with <i class="fa fa-heart"></i> by
-		<a target="_blank" href="https://florin-pop.com">Florin Pop</a>
-		- Read how I created this and how you can join the challenge
-		<a target="_blank" href="https://www.florin-pop.com/blog/2019/03/double-slider-sign-in-up-form/">here</a>.
-	</p>
-</footer> -->
+
