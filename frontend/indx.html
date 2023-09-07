@@ -104,7 +104,7 @@ async function fetchChatList(token) {
             const loginPassword = document.getElementById("login-password").value;
 
 			const token = await handleLogin(loginUsername, loginPassword);
-			
+			localStorage.setItem('authtoken',token);
 			if (token !== null) {
 				
 				try {
@@ -114,7 +114,8 @@ async function fetchChatList(token) {
 							"Authorization": `Bearer ${token}`
 						}
 					});
-					console.log(chatListResponse)
+					
+					// console.log(chatListResponse)
 					if (chatListResponse.status === 200) {
 						const chatListResult = await chatListResponse.json();
 						const chatList = chatListResult.chat_list;

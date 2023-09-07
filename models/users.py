@@ -11,7 +11,7 @@ class UserCreate(BaseModel):
     email : str
     username: str
     password: str
-    mobile : int
+    mobile : str
     
 
 class UserFriends(BaseModel):
@@ -37,16 +37,7 @@ class UserInDB(User):
     username: str
     email: str | None = None
     hashed_password: str | None=None
-    friends : List
+    friends: List[str] = []
 
-
-# class UserInDB(BaseModel):
-#     _id: str  # Assuming _id is a string field
-#     username: str
-#     email: str
-#     hashed_password: str
-#     friends: list = []
-
-# class User(BaseModel):
-#     username: str
-#     email: str | None = None
+class AddFriendRequest(BaseModel):
+    username: str
